@@ -1,0 +1,20 @@
+# vim:ft=ansible:
+---
+- hosts: syslog-ng
+  user: vagrant
+  become: yes
+  become_method: sudo
+  roles:
+  - common
+  - firewalld
+  - syslog-ng-client
+  - syslog-ng-server
+
+- hosts: client
+  user: vagrant
+  become: yes
+  become_method: sudo
+  roles:
+  - common
+  - firewalld
+  - syslog-ng-client

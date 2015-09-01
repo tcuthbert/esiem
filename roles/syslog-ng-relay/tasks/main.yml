@@ -1,0 +1,12 @@
+---
+
+- name: Create client logs directory
+  file: path={{ remote_log_path }} state=directory owner=root group=root
+
+- name: Copy server log configuration
+  template: src=relay.conf.j2 dest=/etc/syslog-ng/conf.d/relay.conf owner=root group=root
+  notify:
+    - restart syslog-ng
+
+- name: Copy logrotate configuration
+  template: src=syslog_server.rotate.j2 dest=/etc/logrotate.d/syslog_server
