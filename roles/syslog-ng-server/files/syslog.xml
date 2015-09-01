@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Syslog</short>
+  <description>Syslog is a widely used standard for message logging. It permits separation of the software that generates messages, the system that stores them, and the software that reports and analyzes them.</description>
+  <port protocol="tcp" port="514"/>
+  <port protocol="udp" port="514"/>
+</service>

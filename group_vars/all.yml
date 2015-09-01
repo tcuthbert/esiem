@@ -2,7 +2,7 @@
 # Debug switches
 #######################################
 
-disable_firewall: true
+disable_firewall: false
 
 #######################################
 # Common apps

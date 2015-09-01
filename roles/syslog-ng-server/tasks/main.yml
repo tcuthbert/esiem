@@ -1,5 +1,13 @@
 ---
 
+- name: Copy syslog firewalld service template
+  copy: src=syslog.xml dest=/etc/firewalld/services/syslog.xml owner=root group=root
+
+- name: Add syslog service to firewalld
+  command: firewall-cmd --zone=public --permanent --add-service=syslog
+  notify:
+    - restart firewalld
+
 - name: Create client logs directory
   file: path={{ remote_log_path }} state=directory owner=root group=root
 
