@@ -21,6 +21,7 @@ Vagrant.configure(2) do |config|
   config.vbguest.auto_update = false
   config.vm.define "syslog-ng" do |sl|
     sl.vm.hostname = "syslog-ng"
+    sl.vm.name = "syslog-ng"
     sl.vm.network "private_network", virtualbox__intnet: 'swp1', ip: "192.168.100.2", nictype: "virtio", :adapter => 2
     sl.vm.provision "ansible" do |ansible|
       ansible.playbook = "playbook.yml"
@@ -31,6 +32,7 @@ Vagrant.configure(2) do |config|
   config.vbguest.auto_update = false
   config.vm.define "graylog" do |gl|
     gl.vm.hostname = "graylog"
+    gl.vm.name = "graylog"
     gl.vm.network "private_network", virtualbox__intnet: 'swp1', ip: "192.168.100.3", nictype: "virtio", :adapter => 2
     gl.vm.provision "ansible" do |ansible|
       ansible.playbook = "playbook.yml"
@@ -39,6 +41,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "client" do |cl|
     cl.vm.hostname = "client"
+    cl.vm.name = "client"
     cl.vm.network "private_network", virtualbox__intnet: 'swp2', ip: "192.168.100.3", nictype: "virtio", :adapter => 2
     cl.vm.provision "ansible" do |ansible|
       ansible.playbook = "playbook.yml"
@@ -47,6 +50,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "switch" do |sw|
     sw.vm.hostname = "switch"
+    sw.vm.switch = "switch"
     sw.vm.box = "CumulusVX-2.5.3-4"
     # Internal network for swp* interfaces.
     sw.vm.network 'private_network', virtualbox__intnet: 'swp1', cumulus__intname: 'swp1', :adapter => 2
