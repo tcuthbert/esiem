@@ -1,0 +1,7 @@
+---
+
+- name: Make testing tools directory
+  file: path=/tmp/tools state=directory
+
+- name: Download testing tools
+  get_url: url="https://raw.githubusercontent.com/dbough/syslog-generator/master/syslogGen.sh" dest=/tmp/tools/syslogGen.sh mode=0770

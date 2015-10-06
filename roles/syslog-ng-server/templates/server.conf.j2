@@ -1,0 +1,34 @@
+source s_tcp { tcp (ip ("127.0.0.1") port (514) max-connections (1) ); };
+source s_udp { udp (ip ("0.0.0.0") port (514)); };
+
+# Destinations
+destination d_everything {
+	#file("{{ remote_log_path }}/$HOST/$YEAR-$MONTH/$FACILITY.$PRIORITY.log"
+	#	template("$FULLDATE $MSGHDR$MSG\n")
+	#	template_escape(no)
+	#);
+	file("{{ remote_log_path }}/$HOST.log"
+		template("$FULLDATE $MSGHDR$MSG\n")
+		template_escape(no)
+	);
+};
+
+log {
+	source(s_tcp);
+	destination(d_everything);
+};
+
+log {
+	source(s_tcp);
+	destination(d_console_all);
+};
+
+log {
+	source(s_udp);
+	destination(d_everything);
+};
+
+log {
+	source(s_udp);
+	destination(d_console_all);
+};

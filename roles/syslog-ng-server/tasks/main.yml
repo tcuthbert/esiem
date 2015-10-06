@@ -1,0 +1,28 @@
+---
+
+- name: Copy syslog firewalld service template
+  copy: src=syslog.xml dest=/etc/firewalld/services/syslog.xml owner=root group=root
+
+- pause: seconds=10
+
+- name: Add syslog service to firewalld
+  command: firewall-cmd --zone=public --permanent --add-service=syslog
+  notify:
+    - restart firewalld
+
+- name: Create client logs directory
+  file: path={{ remote_log_path }} state=directory owner=root group=root
+
+- name: Create client logs archive directory
+  file: path={{ remote_log_path }}/archive state=directory owner=root group=root
+
+- name: Create server daemon directory
+  file: path=/etc/syslog-ng/syslog-ng.d state=directory owner=root group=root
+
+- name: Copy server log configuration
+  template: src=server.conf.j2 dest=/etc/syslog-ng/conf.d/server.conf owner=root group=root
+  notify:
+    - restart syslog-ng
+
+- name: Copy logrotate configuration
+  template: src=syslog_server.rotate.j2 dest=/etc/logrotate.d/syslog_server

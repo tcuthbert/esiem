@@ -1,0 +1,41 @@
+# vim:ft=ansible:
+---
+- hosts: graylog
+  user: vagrant
+  become: yes
+  become_method: sudo
+  roles:
+  - common
+  - firewalld
+  - { role: roles/graylog-ansible/common, tags: common } 
+  - { role: roles/graylog-ansible/mongodb, tags: mongodb } 
+  - { role: roles/graylog-ansible/elasticsearch, tags: elasticsearch }
+  - { role: roles/graylog-ansible/graylog, tags: graylog }
+  - { role: roles/graylog-ansible/nginx, tags: nginx }
+  - { role: roles/graylog-ansible/finish, tags: finish }
+
+- hosts: syslog-ng
+  user: vagrant
+  become: yes
+  become_method: sudo
+  roles:
+  - common
+  - firewalld
+  - syslog-ng-client
+  - syslog-ng-server
+
+- hosts: client
+  user: vagrant
+  become: yes
+  become_method: sudo
+  roles:
+  - common
+  - firewalld
+  - syslog-ng-client
+
+- hosts: switch
+  user: vagrant
+  become: yes
+  become_method: sudo
+  roles:
+  - switch

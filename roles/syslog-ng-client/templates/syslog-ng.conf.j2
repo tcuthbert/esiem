@@ -1,0 +1,95 @@
+@version:3.5
+@include "scl.conf"
+#----------------------------------------------------------------------------
+# /etc/syslog-ng/syslog-ng.conf: configuration file
+# $Revision: 0.3-r5 (CentOS Edition by Wakko Warner) $
+# $Comment: Any comments please send to wakko@acmelabs.spb.ru $
+#----------------------------------------------------------------------------
+
+# Note: it also sources additional configuration files (*.conf)
+#       located in /etc/syslog-ng/conf.d/
+
+# Global Options
+options {
+	# Enable or disable the chained hostname format
+	chain_hostnames (off);
+	# The number of lines buffered before written to file
+	flush_lines (0);
+	log_fifo_size (1000);
+	# The default action of syslog-ng is to log a STATS line
+	# to the file every 10 minutes.  That's pretty ugly after a while.
+	# Change it to every 12 hours so you get a nice daily update of
+	# how many messages syslog-ng missed (0).
+	stats_freq (43200);
+	time_reopen (10);
+	# The default action of syslog-ng is to log a MARK line
+	# to the file every 20 minutes.  That's seems high for most
+	# people so turn it down to once an hour.  Set it to zero
+	# if you don't want the functionality at all.
+	mark_freq(3600);
+	# Enable or disable hostname rewriting
+	keep_hostname (yes);
+	# Enable or disable directory creation for destination files
+	create_dirs (yes);
+	# userid/groupid/permission value for files
+	owner ("root");
+	group ("adm");
+	perm (0640);
+	# userid/groupid/permission value for directories
+	dir_owner ("root");
+	dir_group ("adm");
+	dir_perm (0750);
+	# Enable or disable DNS usage
+	use_dns (no);
+	# Add Fully Qualified Domain Name instead of short hostname
+	use_fqdn (no);
+	long_hostnames (off);
+};
+
+# Sources of syslog messages (both local and remote messages on the server)
+source s_local {
+	system();
+	internal();
+};
+
+# By default messages are logged to tty12...
+#destination d_console_all { file("/dev/tty12"); };
+# ...if you intend to use /dev/console for programs like xconsole
+# you can comment out the destination line above that references /dev/tty12
+# and uncomment the line below.
+#destination d_console_all { file("/dev/console"); };
+#destination d_console_all { file("/dev/null"); };
+destination d_console_all { program("/bin/cat >/dev/null"); };
+
+# Destinations
+destination d_usertty { usertty("*"); };
+destination remote_server { udp("{{ log_server_ip }}" port(514));  };
+
+
+# Filters
+filter f_emergency { level(emerg); };
+filter f_fetchmail_warnings {
+	not(match("fetchmail" value("PROGRAM"))
+	and match("Warning: the connection is insecure, continuing anyways." value("MESSAGE")));
+};
+
+log {
+	source(s_local);
+	filter(f_emergency);
+	destination(d_usertty);
+};
+
+log {
+	source(s_local);
+	destination(d_console_all);
+};
+
+log {
+    source(s_local);
+    destination(remote_server);
+};
+
+# Source additional configuration files (.conf extension only)
+@include "/etc/syslog-ng/conf.d/*.conf"
+
+# vim:ft=syslog-ng:ai:si:ts=4:sw=4:et:
