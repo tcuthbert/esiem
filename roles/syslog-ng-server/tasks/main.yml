@@ -10,8 +10,13 @@
   notify:
     - restart firewalld
 
+- name: Check client logs directory exits
+  stat: path={{ remote_log_path }}
+  register: logdir
+
 - name: Create client logs directory
   file: path={{ remote_log_path }} state=directory owner=root group=root
+  when: logdir.stat.islnk is not defined
 
 - name: Create client logs archive directory
   file: path={{ remote_log_path }}/archive state=directory owner=root group=root

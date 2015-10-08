@@ -10,15 +10,18 @@ testing: true
 #######################################
 
 common_apps:
-  - tcpdump
-  - telnet
-  - nmap-ncat
+  - "tcpdump"
+  - "telnet"
+  - "nmap-ncat"
+
+nfs_server_path: "{{ remote_log_path }}"
+nfs_server_opts: "rw,sync,no_root_squash"
 
 #######################################
 # Logging
 #######################################
 
-log_server_ip: 192.168.100.2
+log_server_ip: 192.168.0.11
 syslog_tcp_port: 514
 syslog_udp_port: 514
 remote_log_path: /var/log/syslog-ng
@@ -35,7 +38,7 @@ graylog_version: 1.2
 graylog_input_port: 5555
 input_type: org.graylog2.inputs.raw.udp.RawUDPInput
 
-password_secret: thisisnotasecurepassword
+password_secret: znj37ohFYlldxN2Z4EeISCnpvI6lnRrDZ8631MJTxBtqMRmRIgali4G4t8DEmmHrGWCzVSFNNNmyjWBBoAtVN4WNlqfBO5WY
 
 # generated using echo -n yourpassword | shasum -a 256
 root_password_sha2: e3c652f0ba0b4801205814f8b6bc49672c4c74e25b497770bb89b22cdeb4e951

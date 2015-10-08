@@ -1,0 +1,35 @@
+---
+
+- name: install nfs client
+  yum: pkg=nfs-utils state=present
+  tags:
+  - nfs
+
+- name: Ensure rpcbind is running (CentOS)
+  service: name=rpcbind state=started enabled=yes
+  tags:
+  - nfs
+
+- name: Ensure {{nfsmount}} directory exists
+  file: path={{nfsmount}} state=directory
+  tags: 
+  - nfs
+
+- shell: if [ -z "$nfsoptions" ]; then  echo "{{ nfs_server_opts }}"; else echo $nfsoptions; fi
+  register: _nfsopts
+  sudo: false
+  connection: local
+  tags:
+  - nfs
+
+- name: Configure /etc/fstab on clients
+  mount: name={{nfsmount}} src={{nfsserver}}:{{nfspath}} fstype=nfs state=mounted
+  when: nfsscaddr is undefined
+  tags:
+  - nfs
+
+- name: Configure /etc/fstab on clients
+  mount: name={{nfsmount}} src={{nfsserver}}:{{nfspath}} fstype=nfs opts="clientaddr={{ nfsscaddr }}" state=mounted
+  when: nfsscaddr is defined
+  tags:
+  - nfs

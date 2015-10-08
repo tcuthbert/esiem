@@ -23,9 +23,10 @@ Vagrant.configure(2) do |config|
   config.vbguest.auto_update = false
   config.vm.define "syslog-ng" do |sl|
     sl.vm.hostname = "syslog-ng"
+    sl.vm.network "private_network", ip: "192.168.0.11", :name => 'nfs-net', :adapter => 2
     sl.vm.provision "shell",
-      inline: "systemctl enable firewalld && systemctl start firewalld"
-    sl.vm.network "private_network", virtualbox__intnet: 'swp1', ip: "192.168.100.2", nictype: "virtio", :adapter => 2
+      inline: "systemctl enable firewalld && systemctl start firewalld && firewall-cmd --permanent --zone=public --add-interface=eth1"
+    #sl.vm.network "private_network", virtualbox__intnet: 'swp1', ip: "192.168.100.20", nictype: "virtio", :adapter => 2
     sl.vm.provision "ansible" do |ansible|
       ansible.playbook = "playbook.yml"
     end
@@ -39,7 +40,8 @@ Vagrant.configure(2) do |config|
       v.memory = 8096
       v.cpus = 4
     end
-    gl.vm.network "private_network", ip: "192.168.101.4"
+    gl.vm.network "private_network", ip: "192.168.0.10", :name => 'nfs-net', :adapter => 2
+    #gl.vm.network "private_network", virtualbox__intnet: 'swp3', ip: "192.168.100.4", nictype: "virtio", :adapter => 2
     gl.vm.provision "shell",
       inline: "systemctl enable firewalld && systemctl start firewalld && firewall-cmd --permanent --zone=public --add-interface=eth1"
     gl.vm.provision "ansible" do |ansible|

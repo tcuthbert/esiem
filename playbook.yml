@@ -7,6 +7,7 @@
   become_method: sudo
   roles:
   - { role: common }
+  - { role: nfs, mode: "client" }
   - { role: firewalld }
   - { role: graylog-ansible/roles/common, tags: common } 
   - { role: graylog-ansible/roles/nginx, tags: nginx }
@@ -23,8 +24,10 @@
   roles:
   - { role: common }
   - { role: firewalld }
+  - { role: nfs, mode: "server" }
   - { role: syslog-ng-client }
   - { role: syslog-ng-server }
+  - { role: ansible-role-nfs  }
 
 - hosts: client
   user: vagrant

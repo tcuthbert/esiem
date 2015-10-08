@@ -1,0 +1,11 @@
+---
+
+- include: nfs-server.yml
+  when: mode == "server"
+  tags:
+  - nfs-server
+
+- include: nfs.yml
+  when: mode == "client"
+  tags:
+  - nfs

@@ -1,0 +1,23 @@
+---
+
+#- name: Push nfs4 firewalld template
+  #template: src=nfs4.xml.j2 dest=/etc/firewalld/services/nfs4.xml
+  #when: ansible_distribution == 'CentOS' and ansible_distribution_version >= '7.0'
+
+#- name: Reload firewalld to load new template
+  #command: firewall-cmd --reload
+  #when: ansible_distribution == 'CentOS' and ansible_distribution_version >= '7.0'
+
+- name: Apply nfs service to public firewall zone
+  firewalld: zone=public service=nfs permanent=true state=enabled immediate=true
+  #firewalld: zone=public service=nfs4 permanent=true state=enabled immediate=true
+  when: ansible_distribution == 'CentOS' and ansible_distribution_version >= '7.0'
+  notify: 
+  - reload firewalld
+  - restart nfs
+  tags:
+  - nfs
+
+#- name: Reload firewalld to for ports to open
+  #command: firewall-cmd --reload
+  #when: ansible_distribution == 'CentOS' and ansible_distribution_version >= '7.0'
