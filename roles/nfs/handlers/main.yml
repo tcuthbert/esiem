@@ -1,7 +1,0 @@
----
-
-- name: reload firewalld
-  command: firewall-cmd --reload
-
-- name: restart nfs
-  service: name=nfs-server state=restarted

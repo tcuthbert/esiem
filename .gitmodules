@@ -1,0 +1,7 @@
+[submodule "roles/graylog-ansible"]
+	path = roles/graylog-ansible
+	url = https://github.com/tcuthbert/graylog-ansible
+[submodule "roles/ansible-role-nfs"]
+	path = roles/ansible-role-nfs
+	url = https://github.com/tcuthbert/ansible-role-nfs
+  branch = fixcentos7rpc
