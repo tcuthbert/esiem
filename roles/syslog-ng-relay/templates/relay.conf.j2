@@ -1,4 +1,7 @@
-destination d_remote_file {  file("{{ remote_log_path }}/$HOST.log"); };
+destination d_remote_file {  file("{{ remote_log_path }}/$HOST-$MONTH-$YEAR-$DAY.log"); };
+destination d_siem {
+  udp("{{ siem_hostname }}" port("514"));
+};
 
 source s_syslog_listener { 
    tcp(port({{ syslog_tcp_port }}) flags(syslog-protocol) );
@@ -12,5 +15,6 @@ log {
 
 log { 
     source(s_syslog_listener); 
-    destination(d_log_server);
+    /*destination(d_log_server);*/
+    destination(d_siem);
 };

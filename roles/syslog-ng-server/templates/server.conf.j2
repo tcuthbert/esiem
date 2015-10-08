@@ -7,11 +7,12 @@ destination d_everything {
 	#	template("$FULLDATE $MSGHDR$MSG\n")
 	#	template_escape(no)
 	#);
-	file("{{ remote_log_path }}/$HOST.log"
+	file("{{ remote_log_path }}/$HOST-$YEAR-$MONTH-$DAY.log"
 		template("$FULLDATE $MSGHDR$MSG\n")
 		template_escape(no)
 	);
 };
+
 
 log {
 	source(s_tcp);

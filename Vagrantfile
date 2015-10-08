@@ -9,6 +9,8 @@ Vagrant.configure(2) do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--nictype1", "virtio", "--nicpromisc1", "allow-all"]
     v.customize ["modifyvm", :id, "--nictype2", "virtio", "--nicpromisc2", "allow-all"] 
@@ -17,21 +19,29 @@ Vagrant.configure(2) do |config|
   end
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "jayunit100/centos7"
+  config.vm.box = "bento/centos-7.1"
   config.vbguest.auto_update = false
   config.vm.define "syslog-ng" do |sl|
     sl.vm.hostname = "syslog-ng"
+    sl.vm.provision "shell",
+      inline: "systemctl enable firewalld && systemctl start firewalld"
     sl.vm.network "private_network", virtualbox__intnet: 'swp1', ip: "192.168.100.2", nictype: "virtio", :adapter => 2
     sl.vm.provision "ansible" do |ansible|
       ansible.playbook = "playbook.yml"
     end
   end
 
-  config.vm.box = "jayunit100/centos7"
+  config.vm.box = "bento/centos-7.1"
   config.vbguest.auto_update = false
   config.vm.define "graylog" do |gl|
     gl.vm.hostname = "graylog"
-    gl.vm.network "private_network", virtualbox__intnet: 'swp1', ip: "192.168.100.3", nictype: "virtio", :adapter => 2
+    gl.vm.provider "virtualbox" do |v|
+      v.memory = 8096
+      v.cpus = 4
+    end
+    gl.vm.network "private_network", ip: "192.168.101.4"
+    gl.vm.provision "shell",
+      inline: "systemctl enable firewalld && systemctl start firewalld && firewall-cmd --permanent --zone=public --add-interface=eth1"
     gl.vm.provision "ansible" do |ansible|
       ansible.playbook = "playbook.yml"
     end
@@ -47,7 +57,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "switch" do |sw|
     sw.vm.hostname = "switch"
-    sw.vm.switch = "switch"
     sw.vm.box = "CumulusVX-2.5.3-4"
     # Internal network for swp* interfaces.
     sw.vm.network 'private_network', virtualbox__intnet: 'swp1', cumulus__intname: 'swp1', :adapter => 2

@@ -1,41 +1,43 @@
 # vim:ft=ansible:
 ---
+
 - hosts: graylog
   user: vagrant
   become: yes
   become_method: sudo
   roles:
-  - common
-  - firewalld
-  - { role: roles/graylog-ansible/common, tags: common } 
-  - { role: roles/graylog-ansible/mongodb, tags: mongodb } 
-  - { role: roles/graylog-ansible/elasticsearch, tags: elasticsearch }
-  - { role: roles/graylog-ansible/graylog, tags: graylog }
-  - { role: roles/graylog-ansible/nginx, tags: nginx }
-  - { role: roles/graylog-ansible/finish, tags: finish }
+  - { role: common }
+  - { role: firewalld }
+  - { role: graylog-ansible/roles/common, tags: common } 
+  - { role: graylog-ansible/roles/nginx, tags: nginx }
+  - { role: graylog-ansible/roles/mongodb, tags: mongodb } 
+  - { role: graylog-ansible/roles/elasticsearch, tags: elasticsearch }
+  - { role: graylog-ansible/roles/graylog, tags: graylog }
+  - { role: graylog-ansible/roles/finish, tags: finish }
+  - { role: syslog-ng-client }
 
 - hosts: syslog-ng
   user: vagrant
   become: yes
   become_method: sudo
   roles:
-  - common
-  - firewalld
-  - syslog-ng-client
-  - syslog-ng-server
+  - { role: common }
+  - { role: firewalld }
+  - { role: syslog-ng-client }
+  - { role: syslog-ng-server }
 
 - hosts: client
   user: vagrant
   become: yes
   become_method: sudo
   roles:
-  - common
-  - firewalld
-  - syslog-ng-client
+  - { role: common }
+  - { role: firewalld }
+  - { role: syslog-ng-client }
 
 - hosts: switch
   user: vagrant
   become: yes
   become_method: sudo
   roles:
-  - switch
+  - { role: switch }

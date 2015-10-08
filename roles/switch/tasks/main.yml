@@ -1,0 +1,7 @@
+---
+
+- name: Setup bridge
+  template: src=interfaces dest=/etc/network/interfaces owner=root group=root
+  notify:
+  - reload interfaces
+  - restart networking

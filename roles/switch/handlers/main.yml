@@ -1,0 +1,7 @@
+---
+
+- name: reload interfaces
+  command: ifreload -a
+
+- name: restart networking
+  service: name=networking state=restarted

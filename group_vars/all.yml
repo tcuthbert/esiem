@@ -21,5 +21,28 @@ common_apps:
 log_server_ip: 192.168.100.2
 syslog_tcp_port: 514
 syslog_udp_port: 514
-remote_log_path: /var/log/remote
+remote_log_path: /var/log/syslog-ng
+siem_hostname: graylog
 
+#######################################
+# Graylog
+#######################################
+
+server_name: "{{ ansible_fqdn }}"
+
+graylog_version: 1.2
+
+graylog_input_port: 5555
+input_type: org.graylog2.inputs.raw.udp.RawUDPInput
+
+password_secret: thisisnotasecurepassword
+
+# generated using echo -n yourpassword | shasum -a 256
+root_password_sha2: e3c652f0ba0b4801205814f8b6bc49672c4c74e25b497770bb89b22cdeb4e951
+
+root_password_unencrypted: yourpassword
+
+mongodb_user: graylog_user
+mongodb_password: 123456
+
+use_self_signed_cert: "yes"

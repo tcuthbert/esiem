@@ -1,5 +1,9 @@
 ---
 
+- name: Set SELinux to permissive
+  selinux: policy=targeted state=permissive
+  when: ansible_distribution == 'CentOS'
+
 - name: Install the epel repository
   yum: name=epel-release state=present
 
